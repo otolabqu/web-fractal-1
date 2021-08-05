@@ -1,5 +1,4 @@
-<canvas id="canvas" width="100" height="100"></canvas>
-
+<canvas id="canvas" width="100" height="100" style="image-rendering: pixelated;"></canvas>
 
 <script>
 
@@ -14,8 +13,7 @@
     let bordercolor = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"]
     
     
-    for(var i=0; i < 300; i++){
-        //console.log("random walk iteration " + i)
+    for(var i=0; i < 600; i++){
         randomWalk();
     }
     console.log("summary borders start: " + borders)
@@ -27,8 +25,6 @@
         let x, y
         //choose random border starting place
         let border = Math.floor(Math.random() * 4)
-        //if (border == 0) {    console.log("border is 0")}
-        //console.log("border : " + border)
         // 0 is left border, 1 riht border, 2 top border, 3 bottom 
         let start = Math.floor(Math.random() * 100)
         if (border == 0 || border == 1) { // left/right
@@ -40,28 +36,21 @@
         }
         borders[border]++
 
-        //console.log ("starting pos: " + x + " , " + y)
         let count = 0
         
 
         while (a[100*(x) + y] == 0 ) { //not filled
-            //if (border == 0) {
-            //    console.log("Tracing start from border 0, now at " + x + ", " + y)
-            //}
             count++
-            //if (count > 200) {     return}
             //move 1 step. if finds a neighbor, save and draw else continue
             let xd
             let xoff = x - 50 > 0 ? 1 : -1
-            xd = Math.random() < 0.52 ? -xoff : xoff // move towards center with prob 0.7
+            xd = Math.random() < 0.52 ? -xoff : xoff // move towards center with probability
 
             x += xd
             x = Math.max(0, x)
             x = Math.min(99, x)
             if (checkNeighbors(x, y)) {
-                //if (border == 0) {   console.log("found neighbor starting from border 0, is now at " + x + ", " + y)}
                 a[100*(x-1) + y] = 1
-                ctx.fillStyle = bordercolor[border]
                 ctx.fillRect(x,y,1,1)
                 return
             }
@@ -73,12 +62,11 @@
             y = Math.max(0, y)
             y = Math.min(99, y)
 
-            //console.log("inner loop " + count + "  position " + x + " , " + y)
             //check neighbors and if one is filled, fill this one and be done
             if (checkNeighbors(x, y)) {
                 //if (border == 0) {   console.log("found neighbor starting from border 0, is now at " + x + ", " + y)}
                 a[100*(x-1) + y] = 1
-                ctx.fillStyle = bordercolor[border]
+                //ctx.fillStyle = bordercolor[border]  //different color depending on which border it starts from 
                 ctx.fillRect(x,y,1,1)
                 return
             }
@@ -101,14 +89,12 @@
         o7 = [x+1, y-1]
         o8 = [x+1, y+1]
 
-        all = [o1, o2, o3, o4]//, o5, o6, o7, o8]
-        //console.log("all: " + all)
-        
+        all = [o1, o2, o3, o4, o5, o6, o7, o8] //allowing the last 4 makes diagonal branching, very different. only first 4 - only straight branching
 
         let valid = all.filter(o => {
             return o[0] < 100 && o[1] < 100 && o[0] >= 0 && o[1] >= 0
         })
-        //console.log("valid: " + valid)
+
         let ret = 0;
         valid.forEach(v => {
             if (a[ 100 * (v[0]-1) + v[1]] == 1) {
