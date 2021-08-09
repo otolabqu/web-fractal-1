@@ -26,7 +26,7 @@
         return diff > 0 ? 1 : -1
     }
 
-    function randomWalk() {
+    function startposition() {
         let xmax = WIDTH - 1
         let ymax = HEIGHT - 1
         let x, y
@@ -41,7 +41,14 @@
             x = start
             y = border == 2 ? 0 : ymax
         }
+        return [x,y]
+    }
 
+    function randomWalk() {
+        let x,y
+        let p = startposition()
+        x = p[0]
+        y = p[1]
         let count = 0
 
         while (a[100*(x) + y] == 0 ) { //not filled
