@@ -21,6 +21,11 @@
         return Math.min(temp, max)
     }
     
+    function off(a, max) { //returns +1 or -1 depending on the distance to center
+        let diff = a - max/2
+        return diff > 0 ? 1 : -1
+    }
+
     function randomWalk() {
         let xmax = WIDTH - 1
         let ymax = HEIGHT - 1
@@ -40,11 +45,12 @@
         let count = 0
 
         while (a[100*(x) + y] == 0 ) { //not filled
+            //We should choose randomly which direction to move each time. 
             count++
             //move 1 step. if finds a neighbor, save and draw else continue
             let xd
-            let xoff = x - 50 > 0 ? 1 : -1
-            xd = Math.random() < 0.52 ? -xoff : xoff // move towards center with probability
+            let xoff = off(x, WIDTH)
+            xd = Math.random() < 0.51 ? -xoff : xoff // move towards center with probability
 
             x += xd
             x = bounded(0, WIDTH-1, x)
@@ -55,8 +61,8 @@
                 return
             }
             let yd
-            let yoff = y - 50 > 0 ? 1 : -1
-            yd = Math.random() < 0.52 ? -yoff : yoff
+            let yoff = off(y, HEIGHT)
+            yd = Math.random() < 0.51 ? -yoff : yoff
 
             y += yd
             y = bounded(0, HEIGHT-1, y)
