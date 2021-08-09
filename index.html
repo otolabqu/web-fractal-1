@@ -1,43 +1,43 @@
 <canvas id="canvas" width="100" height="100" style="image-rendering: pixelated;"></canvas>
 
 <script>
-
-    let a = Array(10000).fill(0)
-    a[(50-1)*100 + 50] = 1 // center pixel
+    let WIDTH = 100
+    let HEIGHT = 100
+    let a = Array(WIDTH * HEIGHT).fill(0)
+    a[(HEIGHT/2 - 1) * WIDTH + WIDTH/2] = 1 // center pixel
 
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     ctx.fillRect(50,50,1,1)
-    console.log("ran script")
-    let borders = [0,0,0,0]
     let bordercolor = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"]
     
-    
-    for(var i=0; i < 600; i++){
+    let ROUNDS = 600
+    for(var i=0; i < ROUNDS; i++){
         randomWalk();
     }
-    console.log("summary borders start: " + borders)
+
+    function bounded(min, max, a) {
+        let temp = Math.max(min, a)
+        return Math.min(temp, max)
+    }
     
     function randomWalk() {
-
-        let xmax = 99
-        let ymax = 99
+        let xmax = WIDTH - 1
+        let ymax = HEIGHT - 1
         let x, y
         //choose random border starting place
         let border = Math.floor(Math.random() * 4)
         // 0 is left border, 1 riht border, 2 top border, 3 bottom 
-        let start = Math.floor(Math.random() * 100)
+        let start = Math.floor(Math.random() * WIDTH) //Since width == height this works, othrwise need to separate
         if (border == 0 || border == 1) { // left/right
           y = start
-          x = border == 0 ? 0 : 99 
+          x = border == 0 ? 0 : xmax
         } else { //top-bottom 
             x = start
-            y = border == 2 ? 0 : 99
+            y = border == 2 ? 0 : ymax
         }
-        borders[border]++
 
         let count = 0
-        
 
         while (a[100*(x) + y] == 0 ) { //not filled
             count++
@@ -47,8 +47,8 @@
             xd = Math.random() < 0.52 ? -xoff : xoff // move towards center with probability
 
             x += xd
-            x = Math.max(0, x)
-            x = Math.min(99, x)
+            x = bounded(0, WIDTH-1, x)
+
             if (checkNeighbors(x, y)) {
                 a[100*(x-1) + y] = 1
                 ctx.fillRect(x,y,1,1)
@@ -59,9 +59,8 @@
             yd = Math.random() < 0.52 ? -yoff : yoff
 
             y += yd
-            y = Math.max(0, y)
-            y = Math.min(99, y)
-
+            y = bounded(0, HEIGHT-1, y)
+            
             //check neighbors and if one is filled, fill this one and be done
             if (checkNeighbors(x, y)) {
                 //if (border == 0) {   console.log("found neighbor starting from border 0, is now at " + x + ", " + y)}
