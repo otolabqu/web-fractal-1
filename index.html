@@ -11,7 +11,7 @@
     //a[(HEIGHT/2 - 1) * WIDTH + WIDTH/2] = 1 // center pixel  
     let bordercolor = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"]
     
-    let ROUNDS = 600
+    let ROUNDS = 2600
     fillBorders() //use with randomWalk2
 
     function fillBorders() {
@@ -111,11 +111,22 @@
             }
             
             if (checkNeighbors(x, y)) {
+                //do not fill if too close to center. this will allow the simulation to keep running longer.
                 //console.log("final position: " + x + " , " + y)
-                fillDraw(x,y)
+                if (centerDistance(x,y) > 15) {
+                    fillDraw(x,y)
+                }
                 return
             }
         }
+    }
+
+    function centerDistance(x, y) {
+        let xc = WIDTH/2
+        let yc = HEIGHT/2
+        let dx = x - xc
+        let dy = y - yc
+        return Math.sqrt(dx*dx + dy*dy)
     }
     
     function checkNeighbors(x, y) {
