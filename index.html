@@ -49,6 +49,12 @@
         ctx.fillRect(x,y,1,1)
     }
 
+    function subRandomWalk(n, max) {
+        let offset = off(n, max)
+        let d = Math.random() < 0.51 ? -offset : offset //move towards center with probability
+        return bounded(0, max-1, n+d)
+    }
+
     function randomWalk() {
         let x,y
         let p = startposition()
@@ -60,24 +66,15 @@
             //We should choose randomly which direction to move each time. 
             count++
             //move 1 step. if finds a neighbor, save and draw else continue
-            let xd
-            let xoff = off(x, WIDTH)
-            xd = Math.random() < 0.51 ? -xoff : xoff // move towards center with probability
-
-            x += xd
-            x = bounded(0, WIDTH-1, x)
+            x = subRandomWalk(x, WIDTH)
 
             if (checkNeighbors(x, y)) {
                 fillDraw(x,y)
                 return
             }
-            let yd
-            let yoff = off(y, HEIGHT)
-            yd = Math.random() < 0.51 ? -yoff : yoff
 
-            y += yd
-            y = bounded(0, HEIGHT-1, y)
-            
+            y = subRandomWalk(y, HEIGHT)
+
             //check neighbors and if one is filled, fill this one and be done
             if (checkNeighbors(x, y)) {
                 fillDraw(x,y)
