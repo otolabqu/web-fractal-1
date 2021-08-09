@@ -44,6 +44,11 @@
         return [x,y]
     }
 
+    function fillDraw(x, y) {
+        a[100*(x-1) + y] = 1
+        ctx.fillRect(x,y,1,1)
+    }
+
     function randomWalk() {
         let x,y
         let p = startposition()
@@ -63,8 +68,7 @@
             x = bounded(0, WIDTH-1, x)
 
             if (checkNeighbors(x, y)) {
-                a[100*(x-1) + y] = 1
-                ctx.fillRect(x,y,1,1)
+                fillDraw(x,y)
                 return
             }
             let yd
@@ -76,10 +80,7 @@
             
             //check neighbors and if one is filled, fill this one and be done
             if (checkNeighbors(x, y)) {
-                //if (border == 0) {   console.log("found neighbor starting from border 0, is now at " + x + ", " + y)}
-                a[100*(x-1) + y] = 1
-                //ctx.fillStyle = bordercolor[border]  //different color depending on which border it starts from 
-                ctx.fillRect(x,y,1,1)
+                fillDraw(x,y)
                 return
             }
    
