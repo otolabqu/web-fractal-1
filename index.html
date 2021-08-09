@@ -4,16 +4,28 @@
     let WIDTH = 100
     let HEIGHT = 100
     let a = Array(WIDTH * HEIGHT).fill(0)
-    a[(HEIGHT/2 - 1) * WIDTH + WIDTH/2] = 1 // center pixel
-
+    
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
-    ctx.fillRect(50,50,1,1)
+    //ctx.fillRect(50,50,1,1) // when starting from borders and moving to center (randomWalk)
+    //a[(HEIGHT/2 - 1) * WIDTH + WIDTH/2] = 1 // center pixel  
     let bordercolor = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00"]
     
     let ROUNDS = 600
+    fillBorders() //use with randomWalk2
+
+    function fillBorders() {
+        for (let i = 0; i<WIDTH; i++) {
+            fillDraw(0, i)
+            fillDraw(99, i)
+            fillDraw(i, 0)
+            fillDraw(i, 99)
+        }
+    }
+
     for(var i=0; i < ROUNDS; i++){
-        randomWalk();
+        //console.log("round " + i)
+        randomWalk2();
     }
 
     function bounded(min, max, a) {
@@ -23,7 +35,7 @@
     
     function off(a, max) { //returns +1 or -1 depending on the distance to center
         let diff = a - max/2
-        return diff > 0 ? 1 : -1
+        return diff > 0 ? 1 : -1 //biased to always choose one direction if zero. should be random
     }
 
     function startposition() {
@@ -45,7 +57,7 @@
     }
 
     function fillDraw(x, y) {
-        a[100*(x-1) + y] = 1
+        a[100*(x) + y] = 1
         ctx.fillRect(x,y,1,1)
     }
 
@@ -55,34 +67,55 @@
         return bounded(0, max-1, n+d)
     }
 
+    function subRandomWalkUnbiased(n, max) {
+        let d = Math.random() < 0.5 ? -1: 1
+        return bounded(0, max, n + d)
+    }
+
     function randomWalk() {
         let x,y
         let p = startposition()
         x = p[0]
         y = p[1]
-        let count = 0
 
         while (a[100*(x) + y] == 0 ) { //not filled
             //We should choose randomly which direction to move each time. 
-            count++
             //move 1 step. if finds a neighbor, save and draw else continue
-            x = subRandomWalk(x, WIDTH)
 
+            let direction = Math.random() < 0.5 ? 0 : 1 
+            if (direction == 0) {
+                x = subRandomWalk(x, WIDTH)
+            } else {
+                y = subRandomWalk(y, HEIGHT)
+            }
+            
             if (checkNeighbors(x, y)) {
                 fillDraw(x,y)
                 return
             }
-
-            y = subRandomWalk(y, HEIGHT)
-
-            //check neighbors and if one is filled, fill this one and be done
-            if (checkNeighbors(x, y)) {
-                fillDraw(x,y)
-                return
-            }
-   
         }
+    }
 
+    function randomWalk2() {
+        let x = 50
+        let y = 50
+        while (a[100*(x) + y] == 0 ) { //not filled
+            //We should choose randomly which direction to move each time. 
+            //move 1 step. if finds a neighbor, save and draw else continue
+
+            let direction = Math.random() < 0.5 ? 0 : 1 
+            if (direction == 0) {
+                x = subRandomWalkUnbiased(x, WIDTH)
+            } else {
+                y = subRandomWalkUnbiased(y, HEIGHT)
+            }
+            
+            if (checkNeighbors(x, y)) {
+                //console.log("final position: " + x + " , " + y)
+                fillDraw(x,y)
+                return
+            }
+        }
     }
     
     function checkNeighbors(x, y) {
@@ -107,7 +140,7 @@
 
         let ret = 0;
         valid.forEach(v => {
-            if (a[ 100 * (v[0]-1) + v[1]] == 1) {
+            if (a[ 100 * (v[0]) + v[1]] == 1) {
                 ret = 1
             }
         })
