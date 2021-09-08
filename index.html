@@ -4,7 +4,7 @@
     let WIDTH = 100
     let HEIGHT = 100
     let a = Array(WIDTH * HEIGHT).fill(0)
-    
+    let whichcolor= Math.floor(Math.random()*3)
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     //ctx.fillRect(50,50,1,1) // when starting from borders and moving to center (randomWalk)
@@ -67,7 +67,15 @@
         let red0 = Math.min(255, fra*255)
         let redinv = 255 - red0
         let red = redinv.toString(16).substring(0,2)
-        let fill = "#"+ red + "0000"
+        let fill
+        if (whichcolor == 0) {
+            fill = "#"+ red + "0000"
+        } else if (whichcolor == 1) {
+            fill = "#00"+ red + "00"
+        } else {
+            fill = "#0000" + red
+        }
+        
         ctx.fillStyle = fill
         ctx.fillRect(x,y,1,1 )
     }
