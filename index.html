@@ -15,6 +15,9 @@
     fillBorders() //use with randomWalk2
 
     function fillBorders() {
+        ctx.fillStyle = "#000000"
+        ctx.fillRect(0,0,100,100)
+        ctx.fillStyle ="#ffffff"
         for (let i = 0; i<WIDTH; i++) {
             fillDraw(0, i)
             fillDraw(99, i)
@@ -26,6 +29,7 @@
     for(var i=0; i < ROUNDS; i++){
         //console.log("round " + i)
         randomWalk2();
+        
     }
 
     function bounded(min, max, a) {
@@ -58,7 +62,14 @@
 
     function fillDraw(x, y) {
         a[100*(x) + y] = 1
-        ctx.fillRect(x,y,1,1)
+        let dis = Math.sqrt((50 -x)*(50-x) + (50-y)*(50-y)) - 10
+        let fra = dis/50.0
+        let red0 = Math.min(255, fra*255)
+        let redinv = 255 - red0
+        let red = redinv.toString(16).substring(0,2)
+        let fill = "#"+ red + "0000"
+        ctx.fillStyle = fill
+        ctx.fillRect(x,y,1,1 )
     }
 
     function subRandomWalk(n, max) {
@@ -113,7 +124,7 @@
             if (checkNeighbors(x, y)) {
                 //do not fill if too close to center. this will allow the simulation to keep running longer.
                 //console.log("final position: " + x + " , " + y)
-                if (centerDistance(x,y) > 15) {
+                if (centerDistance(x,y) > 10) {
                     fillDraw(x,y)
                 }
                 return
